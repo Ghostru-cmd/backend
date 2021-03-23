@@ -1,0 +1,18 @@
+  
+{
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "postgres",
+    "password": "12345",
+    "database": "AmoApi",
+    "entities": ["dist/**/*.entity{.ts,.js}"],
+    "dropSchema": false,
+    "synchronize": true,
+    "migrationsRun": false,
+    "logging": true,
+    "migrations": ["dist/modules/**/db/migrations/*{.ts,.js}"],
+    "cli": {
+      "migrationsDir": "db/migrations"
+    }
+}
