@@ -1,5 +1,7 @@
-import { Controller, Get, Param, Req } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Get, HttpService } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { share } from 'rxjs/operators';
+import { AxiosResponse } from 'axios'
 const AmoCRM = require( 'amocrm-js' );
 
 const crm = new AmoCRM({
@@ -24,13 +26,19 @@ export default crm
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  items$: Observable<AxiosResponse<Item[]>> = this.getItems(); // прикрутили вызов бэка
 
-  @Get()
-  async getLeads(): Promise<any> {
-    const responseLeads = await crm.request.get('/api/v4/leads')
-    const leads = responseLeads.data._embedded.leads
-    const jsonLeads = JSON.stringify(leads)
-    return jsonLeads;
+  constructor(private http: HttpService) {
   }
+
+  getItems(): Observable<AxiosResponse<Item[]>> {
+    return this.http.get<Item[]>('http://localhost:3000/items').pipe(share());
+  }
+}
+
+interface Item {
+  leads: string;
+  pipelines: string;
+  users: string;
+  contacts: string;
 }
