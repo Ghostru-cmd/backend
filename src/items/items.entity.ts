@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeorm/index';
 
-@Entity('data-amo')
+@Entity('test_amo')
 export class ItemEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -8,15 +8,15 @@ export class ItemEntity {
   @CreateDateColumn()
   createDate: string;
 
-  @Column()
+  @Column({ type: 'json' })
   leads: string;
 
-  @Column()
+  @Column({ type: 'json' })
   pipelines: string;
 
-  @Column()
+  @Column({ type: 'json' })
   users: string;
 
-  @Column()
+  @Column({ type: 'json' })
   contacts: string;
 }

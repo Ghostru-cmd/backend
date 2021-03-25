@@ -11,6 +11,7 @@
     "synchronize": true,
     "migrationsRun": false,
     "logging": true,
+    "keepConnectionAlive": true,
     "migrations": ["dist/modules/**/db/migrations/*{.ts,.js}"],
     "cli": {
       "migrationsDir": "db/migrations"

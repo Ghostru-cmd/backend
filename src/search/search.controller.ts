@@ -7,7 +7,7 @@ export class SearchController {
     @Get(':str')
     async getSearch(@Param() query: any,@Res() res: Response): Promise<void> {
         console.log(query.str);
-        const responseQuery = crm.request.get(`/api/v4/leads?query=` + encodeURIComponent(query.str))
+        const responseQuery = crm.request.get(`/api/v4/leads?query=${encodeURIComponent(query.str)}`)
         console.log(JSON.stringify(responseQuery));
         if (Object.keys(responseQuery).length) {
             const queryLeads = responseQuery.data._embedded.leads

@@ -9,7 +9,7 @@ const crm = new AmoCRM({
   auth: {
     client_id: '5286a92f-df6d-43ab-a40b-12ffa34ccfac',
     client_secret: 'optVa0t7kO3WryvHhE1NYsqhmb6HA2GeF4t3lQgQbIbpfUCBcQzS6lyjwgYxvlrP',
-    redirect_uri: 'https://9e20b8504ad6.ngrok.io',
+    redirect_uri: 'https://96f597d929ff.ngrok.io',
     server: {
       port: 4000
     }
@@ -26,19 +26,4 @@ export default crm
 
 @Controller()
 export class AppController {
-  items$: Observable<AxiosResponse<Item[]>> = this.getItems(); // прикрутили вызов бэка
-
-  constructor(private http: HttpService) {
-  }
-
-  getItems(): Observable<AxiosResponse<Item[]>> {
-    return this.http.get<Item[]>('http://localhost:3000/items').pipe(share());
-  }
-}
-
-interface Item {
-  leads: string;
-  pipelines: string;
-  users: string;
-  contacts: string;
 }

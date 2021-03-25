@@ -8,9 +8,10 @@ import { PipelinesController } from './pipelines/pipelines.controller';
 import { SearchController } from './search/search.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ItemsModule } from './items/items.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(), HttpModule, ItemsModule],
+  imports: [TypeOrmModule.forRoot(), ScheduleModule.forRoot(), HttpModule, ItemsModule],
   controllers: [AppController, LeadsController, ContactsController, UsersController, PipelinesController, SearchController],
   providers: [AppService],
 })
