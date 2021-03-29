@@ -5,24 +5,6 @@ import { getRepository, Repository } from 'typeorm';
 import { Leads, Contacts } from './items.entity';
 import crm from '../app.controller'
 
-// interface LeadsTemp {
-//   external_Id: number;
-//   name: string;
-//   status: Array<string>;
-//   responsible_user: string;
-//   created_at: number;
-//   price: number;
-//   contact: Array<string>
-// }
-
-// interface ContactsTemp {
-//   external_Id: number;
-//   name: string;
-//   phone: string;
-//   email: string;
-//   contact: Array<string>;
-// }
-
 @Injectable()
 export class ItemService {
   constructor(
@@ -32,10 +14,10 @@ export class ItemService {
     private contactsRepository: Repository<Contacts>,
   ) {}
     
-  @Cron('30 * * * * *')
+  @Cron('1 */5 * * * *')
   async saveInDB(): Promise<void> {
     
-    const responseLeads = await crm.request.get('/api/v4/leads')
+    const responseLeads = await crm.request.get('/api/v4/leads?with=contacts')
     const leads = responseLeads.data._embedded.leads
     
     const responseContacts = await crm.request.get('/api/v4/contacts')
@@ -52,6 +34,7 @@ export class ItemService {
     const users = responseUsers.data._embedded.users
 
 
+    let contactsDBs = []
     
     contacts.forEach(async (contact, i) => {
       let phoneEmail = contact.custom_fields_values.map(phoneEmail => phoneEmail.values[0].value)
@@ -61,9 +44,7 @@ export class ItemService {
       contactDB.phone = phoneEmail[0]
       contactDB.email = phoneEmail[1]
       
-      // let contactsID = []
-      // contactsID.push(contact.id)
-      // console.log(contactsID);
+      contactsDBs.push(contactDB)
       
       let isSetContact = await getRepository(Contacts).find({ where: { external_Id: contact.id } })
       if (isSetContact.length) {
@@ -95,17 +76,26 @@ export class ItemService {
       for(let i = 0; i < lead._embedded.tags.length; i++){ 
         leadsDB.tags.push(lead._embedded.tags[i].name)
       }
-      
-      // leadsDB.contact = contactsID;
-      // console.log(leadsDB);
-      // await this.leadsRepository.manager.save(leadsDB);
+
+      // let contactsDB = []
+      // let contactsIdArray = lead._embedded.contacts.map(contact => contact.id)
+      // console.log(lead._embedded);
+      // contactsDBs.forEach(con => {
+      //   for (let i = 0; i < contactsIdArray.length; i++) {
+      //     if (con.external_Id == contactsIdArray[i]) {
+      //       contactsDB.push(con)
+      //     }
+      //   }
+      // })
+
+      leadsDB.contact = contactsDBs
 
       let isSetLead: any = await getRepository(Leads).find({ where: { external_Id: lead.id } })
-      console.log(isSetLead[0].id);
+      console.log(isSetLead);
          
       if (isSetLead.length) {
         console.log('update');      
-        this.leadsRepository.update( isSetLead[0].id , leadsDB )
+        this.leadsRepository.update( isSetLead.id , leadsDB )
       } else {
         console.log('save');
         this.leadsRepository.save(leadsDB)
