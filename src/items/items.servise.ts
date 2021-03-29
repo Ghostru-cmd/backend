@@ -36,7 +36,7 @@ export class ItemService {
 
     let contactsDBs = []
     
-    contacts.forEach(async (contact, i) => {
+    contacts.forEach(async contact => {
       let phoneEmail = contact.custom_fields_values.map(phoneEmail => phoneEmail.values[0].value)
       let contactDB = new Contacts()
       contactDB.external_Id = contact.id
@@ -49,7 +49,7 @@ export class ItemService {
       let isSetContact = await getRepository(Contacts).find({ where: { external_Id: contact.id } })
       if (isSetContact.length) {
         console.log('update');      
-        this.contactsRepository.update( contact.id , contactDB )
+        this.contactsRepository.update( isSetContact[0].id , contactDB )
       } else {
         console.log('save');
         this.contactsRepository.save(contactDB)
@@ -57,7 +57,7 @@ export class ItemService {
       
     })
 
-    leads.forEach(async (lead, i) => {
+    leads.forEach(async lead => {
       let status: any
       for(let i = 0; i < pipelines.length; i++){
         status = pipelines[i].find(status => status.id == lead.status_id)
@@ -88,16 +88,17 @@ export class ItemService {
       //   }
       // })
 
-      leadsDB.contact = contactsDBs
+      
 
       let isSetLead: any = await getRepository(Leads).find({ where: { external_Id: lead.id } })
       console.log(isSetLead);
          
       if (isSetLead.length) {
         console.log('update');      
-        this.leadsRepository.update( isSetLead.id , leadsDB )
+        this.leadsRepository.update( isSetLead[0].id , leadsDB )
       } else {
         console.log('save');
+        leadsDB.contact = contactsDBs
         this.leadsRepository.save(leadsDB)
       }
     })
